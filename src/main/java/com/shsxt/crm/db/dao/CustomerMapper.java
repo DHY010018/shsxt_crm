@@ -7,4 +7,5 @@ public interface CustomerMapper extends BaseMapper<Customer,Integer>{
 
 
 
+    Customer queryCustomerByName(String name);
 }

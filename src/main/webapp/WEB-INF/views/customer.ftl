@@ -56,7 +56,7 @@
         <a href="javascript:deleteCustomer()" class="easyui-linkbutton" iconCls="icon-remove" plain="true">删除</a>
         <a href="javascript:deleteCustomer()" class="easyui-linkbutton" iconCls="icon-remove" plain="true">联系人管理</a>
         <a href="javascript:deleteCustomer()" class="easyui-linkbutton" iconCls="icon-remove" plain="true">交往记录</a>
-        <a href="javascript:deleteCustomer()" class="easyui-linkbutton" iconCls="icon-remove" plain="true">订单查看</a>
+        <a href="javascript:openOrderInfoTab()" class="easyui-linkbutton" iconCls="icon-remove" plain="true">订单查看</a>
     </div>
     <div>
         客户名称： <input type="text" id="s_name" size="20" onkeydown="if(event.keyCode==13) searchCustomersByParams()"/>
@@ -76,11 +76,145 @@
             <option value="1">已流失</option>
         </select>
 
-        <a href="javascript:searchCustomersByParams()" class="easyui-linkbutton" iconCls="icon-search"
-           plain="true">搜索</a>
+        <a href="javascript:searchCustomersByParams()" class="easyui-linkbutton" iconCls="icon-search" plain="true">搜索</a>
     </div>
 </div>
 
+
+
+
+<div id="dlg" class="easyui-dialog" style="width:700px;height:450px;padding: 10px 20px"
+     closed="true" buttons="#dlg-buttons">
+    <form id="fm" method="post">
+        <table cellspacing="8px">
+            <tr>
+                <td>客户名称：</td>
+                <td><input type="text" id="name" name="name" class="easyui-validatebox" required="true"/> <font color="red">*</font></td>
+
+                <td>客户地区</td>
+                <td><input type="text" id="area" name="area" /></td>
+            </tr>
+            <tr>
+                <td>客户经理：</td>
+                <td><input type="text" id="cusManager" name="cusManager"  /> </td>
+
+                <td>客户级别：</td>
+                <td>
+                    <select class="easyui-combobox" id="level" name="level" editable="false" panelHeight="auto">
+                        <option value="">请选择...</option>
+                        <option value="普通客户">普通客户</option>
+                        <option value="重点开发客户">重点开发客户</option>
+                        <option value="大客户">大客户</option>
+                        <option value="合作伙伴">合作伙伴</option>
+                        <option value="战略合作伙伴">战略合作伙伴</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>满意度：</td>
+                <td>
+                    <select class="easyui-combobox" id="myd" name="myd" editable="false" panelHeight="auto">
+                        <option value="">请选择...</option>
+                        <option value="☆">☆</option>
+                        <option value="☆☆">☆☆</option>
+                        <option value="☆☆☆">☆☆☆</option>
+                        <option value="☆☆☆☆">☆☆☆☆</option>
+                        <option value="☆☆☆☆☆">☆☆☆☆☆</option>
+                </td>
+
+                <td>信用度：</td>
+                <td colspan="4">
+                    <select class="easyui-combobox" id="xyd" name="xyd" editable="false" panelHeight="auto">
+                        <option value="">请选择...</option>
+                        <option value="☆">☆</option>
+                        <option value="☆☆">☆☆</option>
+                        <option value="☆☆☆">☆☆☆</option>
+                        <option value="☆☆☆☆">☆☆☆☆</option>
+                        <option value="☆☆☆☆☆">☆☆☆☆☆</option>
+                </td>
+            </tr>
+            <tr>
+                <td>公司地址：</td>
+                <td >
+                    <input type="text" id="address" name="address"  />
+                </td>
+
+                <td>公司邮编：</td>
+                <td >
+                    <input type="text" id="post_code" name="post_code"  />
+                </td>
+            </tr>
+
+            <tr>
+                <td>公司电话：</td>
+                <td >
+                    <input type="text" id="phone" name="phone"  class="easyui-validatebox" required="true" /><font color="red">*</font>
+                </td>
+
+                <td>公司传真：</td>
+                <td >
+                    <input type="text" id="fax" name="fax"  />
+                </td>
+            </tr>
+
+
+            <tr>
+                <td>公司网站：</td>
+                <td >
+                    <input type="text" id="webSite" name="webSite"  />
+                </td>
+
+                <td>营业执照：</td>
+                <td >
+                    <input type="text" id="yyzzzch" name="yyzzzch"  />
+                </td>
+            </tr>
+            <tr>
+                <td>法人代表：</td>
+                <td >
+                    <input type="text" id="fr" name="fr" class="easyui-validatebox" required="true" /><font color="red">*</font>
+                </td>
+
+                <td>注册资金：</td>
+                <td >
+                    <input type="text" id="zczj" name="zczj"  />
+                </td>
+            </tr>
+
+            <tr>
+                <td>年营业额(万)：</td>
+                <td >
+                    <input type="text" id="nyye" name="nyye"  />
+                </td>
+
+                <td>开户行：</td>
+                <td>
+                    <input type="text" id="khyh" name="khyh"  />
+                </td>
+            </tr>
+
+            <tr>
+                <td>国税：</td>
+                <td >
+                    <input type="text" id="gsdjh" name="gsdjh"  />
+                </td>
+
+                <td>地税：</td>
+                <td >
+                    <input type="text" id="dsdjh" name="dsdjh"  />
+                </td>
+            </tr>
+
+        </table>
+
+        <input name="id" type="hidden" id="id"/>
+    </form>
+</div>
+
+<div id="dlg-buttons">
+    <a href="javascript:saveOrUpdateCustomer()" class="easyui-linkbutton" iconCls="icon-ok">保存</a>
+    <a href="javascript:closeCustomerDialog()" class="easyui-linkbutton" iconCls="icon-cancel">关闭</a>
+</div>
 
 </body>
 </html>
