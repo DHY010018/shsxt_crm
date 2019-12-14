@@ -2,22 +2,34 @@ package com.shsxt.crm.service;
 
 import com.shsxt.base.BaseService;
 import com.shsxt.crm.db.dao.CustomerMapper;
+import com.shsxt.crm.db.dao.CustomerOrderMapper;
+import com.shsxt.crm.db.dao.CustomerlossMapper;
 import com.shsxt.crm.model.ResultInfo;
 import com.shsxt.crm.utils.AssertUtil;
 import com.shsxt.crm.vo.Customer;
+import com.shsxt.crm.vo.CustomerOrder;
+import com.shsxt.crm.vo.Customerloss;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Administrator on 2019/12/12.
  */
 @Service
 public class CustomerService extends BaseService<Customer,Integer>{
+    @Resource
+    private CustomerOrderMapper customerOrderMapper;
 @Resource
 private CustomerMapper customerMapper;
+
+@Resource
+private CustomerlossMapper customerlossMapper;
 
 public void saveCustomer(Customer customer){
     /**
@@ -88,6 +100,42 @@ public void saveCustomer(Customer customer){
         AssertUtil.isTrue(customer==null,"待删除记录不存在");
         customer.setIsValid(0);
         AssertUtil.isTrue(update(customer)<1,"客户记录删除失败!");
+    }
+
+    /*
+    * 流失客户转移
+    * 1.根据条件查询出符合条件的流失客户
+    * 2.将符合条件的流失客户转移到客户流失表
+    *
+    * */
+    public void updateCustomerState(){
+        List<Customer> customers = customerMapper.queryLossCustomers();
+        Integer[]ids=null;
+        List<Customerloss> customerlosses=null;
+        if (!(CollectionUtils.isEmpty(customers))){
+            ids=new Integer[customers.size()];
+            customerlosses=new ArrayList<Customerloss>();
+            for (int i = 0; i <customers.size() ; i++) {
+                ids[i]=customers.get(i).getId();
+                Customerloss customerloss=new Customerloss();
+                customerloss.setUpdateDate(new Date());
+                //atate:客户最终流失状态 0--->暂缓流失  1--->确认流失
+                customerloss.setState(0);
+                //设置客户最后一次下单时间
+                CustomerOrder customerOrder = customerOrderMapper.queryLastCustomerOrderByCusId(customerloss.getId());
+                if(null!= customerOrder){
+                    customerloss.setConfirmLossTime(customerOrder.getOrderDate());
+                }
+                customerloss.setIsValid(1);
+                customerloss.setCusNo(customers.get(i).getKhno());
+                customerloss.setCusName(customers.get(i).getName());
+                customerloss.setCusManager(customers.get(i).getCusManager());
+                customerloss.setCreateDate(new Date());
+                customerlosses.add(customerloss);
+            }
+           AssertUtil.isTrue( customerlossMapper.saveBatch(customerlosses)!=customerlosses.size(),"客户流失数据添加失败!");
+           AssertUtil.isTrue( customerMapper.updateStateBatch(ids)!=ids.length,"客户数据流转失败!");
+        }
     }
 
 }

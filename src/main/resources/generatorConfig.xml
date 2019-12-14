@@ -42,7 +42,7 @@
 
 
 
-        <table tableName="t_customer_order" domainObjectName="CustomerOrder"
+        <table tableName="t_customer_loss" domainObjectName="Customerloss"
                enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
 

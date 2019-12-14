@@ -274,6 +274,12 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <update id="updateStateBatch">
+    UPDATE t_customer SET state=1 WHERE is_valid=1 AND id IN
+    <foreach collection="array" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
   <select id="queryByParams" parameterType="CustomerQuery" resultMap="BaseResultMap">
     SELECT <include refid="Base_Column_List"/> FROM t_customer
     <where>
@@ -297,4 +303,20 @@
     FROM t_customer
     WHERE is_valid=1 AND name=#{name}
   </select>
+    <select id="queryLossCustomers" resultMap="BaseResultMap">
+      SELECT *
+      FROM t_customer
+      WHERE
+         is_valid=1 AND state=0 AND date_add(create_date,INTERVAL 6 MONTH) &lt;NOW()
+          AND id NOT IN (
+                 SELECT
+                   cus_id
+                 FROM
+                   t_customer_order
+                 WHERE
+                   t_customer_order.is_valid=1 AND t_customer_order.state=1
+                       AND date_add(t_customer_order.create_date,INTERVAL 6 MONTH)&gt;now()
+                )
+    </select>
+
 </mapper>

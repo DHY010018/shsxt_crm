@@ -5,4 +5,5 @@ import com.shsxt.crm.vo.CustomerOrder;
 
 public interface CustomerOrderMapper extends BaseMapper<CustomerOrder,Integer>{
 
+    CustomerOrder queryLastCustomerOrderByCusId(Integer cusId);
 }

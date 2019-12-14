@@ -76,7 +76,7 @@ public abstract class BaseService<T, ID> {
 
     public Map<String,Object>baseServiceQueryByParams(BaseQuery baseQuery){
         PageInfo<T> cusDevPlanPageInfo = queryForPage(baseQuery);
-        HashMap<String, Object> result = new HashMap<>();
+        Map<String, Object> result = new HashMap<>();
         result.put("total",cusDevPlanPageInfo.getTotal());
         result.put("rows",cusDevPlanPageInfo.getList());
         return result;
